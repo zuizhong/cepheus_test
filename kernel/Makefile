@@ -119,7 +119,7 @@ $(obj)/configs.o: $(obj)/config_data.h
 targets += config_data.gz
 
 ifneq ($(CONFIG_MACH_XIAOMI_CEPHEUS),y)
-$(obj)/config_data.gz: arch/arm64/configs/cepheus_stock_defconfig FORCE
+$(obj)/config_data.gz: arch/arm64/configs/sm8150-perf_defconfig FORCE
 endif
 
 ifneq ($(CONFIG_MACH_XIAOMI_RAPHAEL),y)

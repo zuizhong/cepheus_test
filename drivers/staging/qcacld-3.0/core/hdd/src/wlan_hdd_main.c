@@ -14759,8 +14759,6 @@ static int con_mode_handler(const char *kmessage, const struct kernel_param *kp)
 	cds_ssr_protect(__func__);
 	ret = __con_mode_handler(kmessage, kp, hdd_ctx);
 	cds_ssr_unprotect(__func__);
-=======
->>>>>>> a06aff572a61... qcacld-3.0: Load driver during kernel init when not built as a module
 
 	return ret;
 }

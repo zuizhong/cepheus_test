@@ -4200,13 +4200,9 @@ static int smb5_probe(struct platform_device *pdev)
 	chg->connector_health = -EINVAL;
 	chg->otg_present = false;
 	chg->main_fcc_max = -EINVAL;
-<<<<<<< HEAD
-=======
 	chg->fake_dc_on = false;
 	chg->support_liquid = false;
 	chg->init_once = false;
-	mutex_init(&chg->adc_lock);
->>>>>>> 5892b2f7af6b... drivers: power: supply: Import Xiaomi changes
 
 	chg->regmap = dev_get_regmap(chg->dev->parent, NULL);
 	if (!chg->regmap) {
@@ -4451,3 +4447,4 @@ module_platform_driver(smb5_driver);
 
 MODULE_DESCRIPTION("QPNP SMB5 Charger Driver");
 MODULE_LICENSE("GPL v2");
+
