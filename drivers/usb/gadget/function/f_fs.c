@@ -1101,8 +1101,6 @@ static ssize_t ffs_epfile_io(struct file *file, struct ffs_io_data *io_data)
 			}
 		}
 
-		ffs_log("ep status %d for req %pK", ep->status, req);
-
 		if (interrupted) {
 			ret = -EINTR;
 			goto error_mutex;
@@ -1115,8 +1113,10 @@ static ssize_t ffs_epfile_io(struct file *file, struct ffs_io_data *io_data)
 		 * disabled (disconnect) or changed
 		 * (composition switch) ?
 		 */
-		if (epfile->ep == ep)
+		if (epfile->ep == ep) {
 			ret = ep->status;
+			ffs_log("ep status %d for req %pK", ep->status, req);
+		}
 		spin_unlock_irq(&epfile->ffs->eps_lock);
 		if (io_data->read && ret > 0)
 			ret = __ffs_epfile_read_data(epfile, data, ep->status,
@@ -1396,8 +1396,8 @@ static long ffs_epfile_ioctl(struct file *file, unsigned code,
 		struct usb_endpoint_descriptor desc1, *desc;
 
 		switch (epfile->ffs->gadget->speed) {
-		case USB_SPEED_SUPER:
 		case USB_SPEED_SUPER_PLUS:
+		case USB_SPEED_SUPER:
 			desc_idx = 2;
 			break;
 		case USB_SPEED_HIGH:
@@ -3182,7 +3182,8 @@ static inline struct f_fs_opts *ffs_do_functionfs_bind(struct usb_function *f,
 	struct ffs_function *func = ffs_func_from_usb(f);
 	struct f_fs_opts *ffs_opts =
 		container_of(f->fi, struct f_fs_opts, func_inst);
-	struct ffs_data *ffs_data;
+	struct ffs_data *ffs;
+
 	int ret;
 
 	ENTER();
@@ -3197,13 +3198,13 @@ static inline struct f_fs_opts *ffs_do_functionfs_bind(struct usb_function *f,
 	if (!ffs_opts->no_configfs)
 		ffs_dev_lock();
 	ret = ffs_opts->dev->desc_ready ? 0 : -ENODEV;
-	ffs_data = ffs_opts->dev->ffs_data;
+	ffs = ffs_opts->dev->ffs_data;
 	if (!ffs_opts->no_configfs)
 		ffs_dev_unlock();
 	if (ret)
 		return ERR_PTR(ret);
 
-	func->ffs = ffs_data;
+	func->ffs = ffs;
 	func->conf = c;
 	func->gadget = c->cdev->gadget;
 
@@ -4076,4 +4077,3 @@ static char *ffs_prepare_buffer(const char __user *buf, size_t len)
 DECLARE_USB_FUNCTION_INIT(ffs, ffs_alloc_inst, ffs_alloc);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michal Nazarewicz");
-

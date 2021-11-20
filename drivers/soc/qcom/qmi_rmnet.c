@@ -833,9 +833,7 @@ static int qmi_rmnet_get_queue_sa(struct qos_info *qos, struct sk_buff *skb)
 
 	/* Put NDP in default mq */
 	if (skb->protocol == htons(ETH_P_IPV6) &&
-	    ipv6_hdr(skb)->nexthdr == IPPROTO_ICMPV6 &&
-	    icmp6_hdr(skb)->icmp6_type >= 133 &&
-	    icmp6_hdr(skb)->icmp6_type <= 137) {
+	    ipv6_hdr(skb)->nexthdr == IPPROTO_ICMPV6) {
 		return DEFAULT_MQ_NUM;
 	}
 
